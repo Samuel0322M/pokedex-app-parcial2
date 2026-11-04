@@ -13,7 +13,7 @@ export const getPokemonsAction = async (page: number = 1, limit: number = 12): P
     const offset = (page - 1) * limit;
   
     const { data } = await pokeApi.get<PokeAPIListResponse>('/pokemon', {
-    params: { limit: limit, offet: offset }
+    params: { limit: limit, offset: offset }
   });
   
   const pokemons = data.results.map( (item) => {
