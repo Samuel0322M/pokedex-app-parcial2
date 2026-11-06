@@ -10,21 +10,14 @@ export interface PaginatedPokemons {
 }
 
 export const getPokemonsAction = async (
-  page: number = 1, 
+  page: number = 1,
   limit: number = 12,
   genId: string = 'gen1'
 ): Promise<PaginatedPokemons> => {
-  
-  
   const gen = GENERATIONS.find((g) => g.id === genId) ?? GENERATIONS[0];
-  
-  
   const genOffset = gen.offset + (page - 1) * limit;
-
-
   const remainingInGen = gen.limit - (page - 1) * limit;
   const currentLimit = Math.min(limit, Math.max(remainingInGen, 0));
-
 
   if (currentLimit <= 0) {
     return { total: gen.limit, pages: Math.ceil(gen.limit / limit), pokemons: [] };
@@ -33,7 +26,7 @@ export const getPokemonsAction = async (
   const { data } = await pokeApi.get<PokeAPIListResponse>('/pokemon', {
     params: { limit: currentLimit, offset: genOffset }
   });
-  
+
   const pokemons = data.results.map((item) => {
     const urlParts = item.url.split('/');
     const id = urlParts[urlParts.length - 2];
@@ -44,7 +37,7 @@ export const getPokemonsAction = async (
 
   return {
     total: gen.limit,
-    pages: Math.ceil(gen.limit / limit), // El total de páginas depende de la región
+    pages: Math.ceil(gen.limit / limit),
     pokemons
   };
 };

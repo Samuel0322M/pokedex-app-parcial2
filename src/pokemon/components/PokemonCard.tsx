@@ -10,7 +10,6 @@ export const PokemonCard = ({ pokemon }: Props) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    // Navegará a la página de detalle cuando la construyamos
     navigate(`/pokemon/${pokemon.id}`);
   };
 

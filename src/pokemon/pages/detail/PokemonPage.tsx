@@ -9,6 +9,25 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PokemonEvolutions } from "@/pokemon/components/PokemonEvolutions";
 import { Skeleton } from "@/components/ui/skeleton";
 
+const statBarColors: Record<string, string> = {
+  hp: "[&_[data-slot=progress-indicator]]:bg-emerald-500",
+  attack: "[&_[data-slot=progress-indicator]]:bg-red-500",
+  defense: "[&_[data-slot=progress-indicator]]:bg-blue-500",
+  "special-attack": "[&_[data-slot=progress-indicator]]:bg-violet-500",
+  "special-defense": "[&_[data-slot=progress-indicator]]:bg-teal-500",
+  speed: "[&_[data-slot=progress-indicator]]:bg-amber-400",
+  default: "[&_[data-slot=progress-indicator]]:bg-sky-500",
+};
+
+const moveBadgeColors = [
+  "border-cyan-400/40 bg-cyan-500/15 text-cyan-200 hover:bg-cyan-500/30 hover:text-white",
+  "border-fuchsia-400/40 bg-fuchsia-500/15 text-fuchsia-200 hover:bg-fuchsia-500/30 hover:text-white",
+  "border-amber-400/40 bg-amber-500/15 text-amber-200 hover:bg-amber-500/30 hover:text-white",
+  "border-emerald-400/40 bg-emerald-500/15 text-emerald-200 hover:bg-emerald-500/30 hover:text-white",
+  "border-violet-400/40 bg-violet-500/15 text-violet-200 hover:bg-violet-500/30 hover:text-white",
+  "border-rose-400/40 bg-rose-500/15 text-rose-200 hover:bg-rose-500/30 hover:text-white",
+];
+
 export const PokemonPage = () => {
   const { idSlug = '' } = useParams();
 
@@ -46,8 +65,6 @@ export const PokemonPage = () => {
       </Button>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-
-        {/* Columna Izquierda: Tarjeta Principal */}
         <div className="lg:col-span-4 bg-slate-900/80 rounded-3xl p-6 border border-slate-800 flex flex-col items-center shadow-lg text-slate-100">
           <span className="text-slate-400 font-mono text-xl font-bold w-full text-left">#{pokemon.id.padStart(3, '0')}</span>
           <img src={pokemon.image} alt={pokemon.name} className="w-64 h-64 object-contain drop-shadow-2xl my-4 hover:scale-105 transition-transform" />
@@ -70,7 +87,6 @@ export const PokemonPage = () => {
           </div>
         </div>
 
-        {/* Columna Derecha: Sistema de Pestañas */}
         <div className="lg:col-span-8">
           <Tabs defaultValue="stats" className="w-full">
             <TabsList className="grid w-full grid-cols-3 h-20 min-h-20 bg-slate-900/80 border border-slate-800 p-1.5 rounded-xl">
@@ -87,7 +103,6 @@ export const PokemonPage = () => {
               </TabsTrigger>
             </TabsList>
 
-            {/* Las tarjetas ahora tienen texto claro forzado (text-slate-100) y altura mínima (min-h-[450px]) */}
             <TabsContent value="stats" className="mt-6 focus-visible:outline-none">
               <Card className="bg-slate-900/90 border-slate-800 shadow-xl text-slate-100 min-h-[450px]">
                 <CardHeader className="border-b border-slate-800/80 pb-5">
@@ -100,7 +115,10 @@ export const PokemonPage = () => {
                         <span className="capitalize text-slate-300">{stat.name.replace('-', ' ')}</span>
                         <span className="text-white font-bold text-lg">{stat.value}</span>
                       </div>
-                      <Progress value={(stat.value / 255) * 100} className="h-3 bg-slate-800/80" />
+                      <Progress
+                        value={(stat.value / 255) * 100}
+                        className={`h-3 bg-slate-800/80 ${statBarColors[stat.name] ?? statBarColors.default}`}
+                      />
                     </div>
                   ))}
                 </CardContent>
@@ -114,8 +132,8 @@ export const PokemonPage = () => {
                 </CardHeader>
                 <CardContent className="pt-6">
                   <div className="flex flex-wrap gap-3 h-[350px] overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-slate-700">
-                    {pokemon.moves.map(move => (
-                      <Badge key={move} variant="outline" className="capitalize bg-slate-800/50 text-slate-200 border-slate-700 hover:bg-slate-700 hover:text-white px-3 py-1.5 text-sm font-medium transition-colors">
+                    {pokemon.moves.map((move, index) => (
+                      <Badge key={move} variant="outline" className={`h-auto rounded-xl px-3 py-2 text-sm font-semibold shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg ${moveBadgeColors[index % moveBadgeColors.length]}`}>
                         {move.replace('-', ' ')}
                       </Badge>
                     ))}
